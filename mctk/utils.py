@@ -5,9 +5,13 @@ def combine(point, block):
     return point+(block,)
 
 def set_points(point_set, mc, block_num):
+    if isinstance(block_num, tuple):
+        block_num, block_type = block_num
+    else:
+        block_type = 0
     for point in point_set:
         x,y,z = point
-        mc.setBlock(x, y, z, block_num)
+        mc.setBlock(x, y, z, block_num, block_type)
 
 def translate_points(point_set, xdiff, ydiff, zdiff):
     new_point_set = set()

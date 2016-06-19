@@ -20,4 +20,4 @@ def armada(n=10):
 		z += 20
 
 if __name__ == "__main__":
-	armada()
+	spawn_ship()

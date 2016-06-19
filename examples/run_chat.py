@@ -48,6 +48,33 @@ def tunnels_for_days(daemon, message):
 	elif message_split[1] == "off":
 		daemon.remove_constant('tunnels')
 
+def castle(daemon, message):
+	mc = daemon.mc
+	x,y,z = mc.player.getPos()
+	print(message)
+	message = message.split(" ")
+	try:
+		W = int(message[1])
+		H = int(message[2])
+		wall(mc, (x+W//2,y,z), W, 2, H, 'z')
+		wall(mc, (x,y,z+W//2), W, 2, H, 'x')
+		wall(mc, (x-W//2,y,z), W, 2, H, 'z')
+		wall(mc, (x,y,z-W//2), W, 2, H, 'x')
+	except Exception as e:
+		print("failed", e)
+
+
+def wall(mc, pos, length, width, height, axis='x', block=89):
+	x,y,z = pos
+	if axis=='x':
+		mc.setBlocks(x-length//2, y, z-width//2, x+length//2, y+height, z+width//2, block)
+		for i in range(0, length, 3):
+			mc.setBlock(x-length//2+i, y+1+height, z, block)
+	else:
+		mc.setBlocks(x-width//2, y, z-length//2, x+width//2, y+height, z+length//2, block)
+		for i in range(0, length, 3):
+			mc.setBlock(x, y+1+height, z-length//2+i, block)
+
 def forced_tunnel(daemon, message):
 
 	message_split = message.split(" ")
@@ -86,12 +113,14 @@ def forced_tunnel(daemon, message):
 	elif message_split[1] == "off":
 		daemon.remove_constant('forcedtunnels')
 
+
 def run():
 	daemon = mctk.interact.Chat()
 	daemon.register_listener('nuke', nuke_action)
 	daemon.register_listener('tntvision', tnt_vision)
 	daemon.register_listener('tunnels', tunnels_for_days)
 	daemon.register_listener('forcedtunnel', forced_tunnel)
+	daemon.register_listener('castle', castle)
 	daemon.run()
 
 if __name__ == "__main__":
